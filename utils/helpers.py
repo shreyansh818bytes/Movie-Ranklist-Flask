@@ -36,35 +36,30 @@ def get_average_movie_score(movie: MovieList.Movie) -> float:
     return float(sum(filtered_scores) / len(filtered_scores))
 
 
-def map_json_to_movie_details(json_response, movie):
+def map_json_to_movie_details(movie_data, movie):
     movie_details = {
         "id": hash(("title", movie.title)),
-        "logo_url": "",
+        "logo_url": "static/assets/not-found-icon.svg",
         "title": movie.title,
         "year": movie.year,
         "tmdb_score": 0,
+        "release_date": "",
     }
-    request_successful = False
 
-    if "results" in json_response and len(json_response["results"]):
-        first_result = json_response["results"][0]
-        if "release_date" in first_result:
-            year = first_result["release_date"].split("-")[0]
-            first_result["year"] = year
-        movie_details["id"] = first_result["id"]
-        movie_details["title"] = first_result["title"]
-        movie_details["year"] = first_result["year"] if "year" in first_result else 0
-        tmdb_image_url = "https://image.tmdb.org/t/p/original"
-        movie_details["tmdb_score"] = first_result["vote_average"]
-        if first_result["backdrop_path"] is not None:
-            movie_details["logo_url"] = tmdb_image_url + first_result["backdrop_path"]
-        else:
-            movie_details["logo_url"] = "static/assets/not-found-icon.svg"
-        request_successful = True
-    else:
-        movie_details["logo_url"] = "static/assets/not-found-icon.svg"
+    if not movie_data:
+        return (False, movie_details)
 
-    return (request_successful, movie_details)
+    if "release_date" in movie_data:
+        movie_details["year"] = movie_data["release_date"].split("-")[0]
+        movie_details["release_date"] = movie_data["release_date"]
+    movie_details["id"] = movie_data["id"]
+    movie_details["title"] = movie_data["title"]
+    movie_details["tmdb_score"] = movie_data["vote_average"]
+    tmdb_image_url = "https://image.tmdb.org/t/p/original"
+    if movie_data["backdrop_path"] is not None:
+        movie_details["logo_url"] = tmdb_image_url + movie_data["backdrop_path"]
+
+    return (True, movie_details)
 
 
 def fetch_movie_details_helper(movie_list: MovieList):
@@ -87,7 +82,9 @@ def fetch_movie_details_helper(movie_list: MovieList):
 
             if is_request_successful:
                 movie.fetched_details["imdb_score"] = fetch_movie_ratings_from_imdb(
-                    movie_title=movie.fetched_details["title"]
+                    movie_title=movie.fetched_details["title"],
+                    movie_release_date=movie.fetched_details["release_date"],
+                    movie_year=int(movie.fetched_details["year"]),
                 )
                 movie.fetched_details["rt_score"] = fetch_movie_ratings_from_rt(
                     movie_title=movie.fetched_details["title"]

@@ -1,5 +1,6 @@
 import os
 
+import pydash
 import requests
 
 TMDB_API_KEY = os.environ.get("TMDB_API_KEY")
@@ -23,4 +24,5 @@ def fetch_movie_details_from_tmdb(
         params=params,
         timeout=5,
     )
-    return response.json()
+
+    return pydash.get(response.json(), "results[0]", None)
