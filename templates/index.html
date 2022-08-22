@@ -85,6 +85,40 @@
                                 </h3>
                             </div>
 
+                            <!-- Individual Score Pills -->
+                            <div class="d-inline-flex my-1">
+                                <div class="icon-text-pill">
+                                    <img src="{{ url_for('static', filename='assets/imdb-icon.svg') }}" />
+                                    <p>
+                                        {% if movie.fetched_details.imdb_score %}
+                                            {{ movie.fetched_details.imdb_score }}
+                                        {% else %}
+                                            --
+                                        {% endif %}
+                                    </p>
+                                </div>
+                                <div class="icon-text-pill">
+                                    <img src="{{ url_for('static', filename='assets/rt-icon.svg') }}" />
+                                    <p>
+                                        {% if movie.fetched_details.rt_score %}
+                                            {{ movie.fetched_details.rt_score }}
+                                        {% else %}
+                                            --
+                                        {% endif %}
+                                    </p>
+                                </div>
+                                <div class="icon-text-pill">
+                                    <img src="{{ url_for('static', filename='assets/tmdb-icon.svg') }}" />
+                                    <p>
+                                        {% if movie.fetched_details.tmdb_score %}
+                                            {{ movie.fetched_details.tmdb_score }}
+                                        {% else %}
+                                            --
+                                        {% endif %}
+                                    </p>
+                                </div>
+                            </div>
+
                             <!-- Average Score Pill -->
                             <div class="rounded-pill avg-score">
                                 {% if movie.fetched_details.average_score %}

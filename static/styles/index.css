@@ -78,6 +78,7 @@
     flex-direction: column;
     justify-content: start;
     align-items: start;
+    margin-top: 0.2rem;
 }
 .title-year-container > h1 {
     margin: 0;
@@ -113,6 +114,26 @@
     position: absolute;
     bottom: 0.75rem;
     right: 0.75rem;
+}
+.icon-text-pill {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 1.8rem;
+    width: 5.5rem;
+    padding: 0.15rem 0.7rem;
+    background-color: white;
+    border-radius: 1rem;
+    margin-right: 0.3rem;
+}
+.icon-text-pill > img {
+    height: 1rem;
+    width: auto;
+}
+.icon-text-pill > p {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 700;
 }
 
 /* Selectors */
