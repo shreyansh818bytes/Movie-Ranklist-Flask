@@ -1,9 +1,10 @@
-from flask import Flask, render_template, request, session, redirect
+from flask import Flask, redirect, render_template, request, session
+
 from flask_session import Session
 from utils.helpers import (
     fetch_movie_details_helper,
-    movie_search_handler,
     movie_delete_handler,
+    movie_search_handler,
 )
 from utils.objects import MovieList
 

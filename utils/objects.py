@@ -31,12 +31,11 @@ class MovieList:
                 is_both_successfully_fetched
                 and self.fetched_details["id"] == other.fetched_details["id"]
             )
-        
+
         def __hash__(self) -> int:
             if self.details_request["is_successful"]:
-                return hash(('tmdb_id', self.fetched_details["id"]))
-            return hash(('title', self.title, 'year', self.year))
-
+                return hash(("tmdb_id", self.fetched_details["id"]))
+            return hash(("title", self.title, "year", self.year))
 
     def __init__(self, movie_names_list: List[str] = []):
         self.list: List[self.Movie] = []

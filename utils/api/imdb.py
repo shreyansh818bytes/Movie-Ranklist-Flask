@@ -1,6 +1,7 @@
 import os
-import requests
+
 import pydash
+import requests
 
 
 def fetch_movie_ratings_from_imdb(movie_title):
@@ -14,5 +15,5 @@ def fetch_movie_ratings_from_imdb(movie_title):
     }
 
     response = requests.get(url, headers=headers, params=querystring).json()
-    
-    return pydash.get(response, 'results[0].ratings.rating', 0)
+
+    return pydash.get(response, "results[0].ratings.rating", 0)
