@@ -4,6 +4,7 @@ from .api.rt import fetch_movie_ratings_from_rt
 from .api.tmdb import fetch_movie_details_from_tmdb
 from .objects import MovieList
 
+
 # Handlers.
 def movie_search_handler(request_form):
     movie_list = []
@@ -94,3 +95,6 @@ def fetch_movie_details_helper(movie_list: MovieList):
                 movie.fetched_details["average_score"] = get_average_movie_score(movie)
 
     movie_list.list = list(set(movie_list.list))  # Removing duplicates
+    movie_list.list.sort(
+        key=lambda movie: movie.fetched_details["average_score"], reverse=True
+    )
