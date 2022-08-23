@@ -41,6 +41,9 @@
     padding: 0;
     cursor: pointer;
 }
+.filter-neutral {
+    filter: invert(35%) sepia(68%) saturate(10%) hue-rotate(318deg) brightness(94%) contrast(92%);
+}
 
 /* Movie Card classes */
 .movie-container {
@@ -58,6 +61,7 @@
     display: inline-block;
     margin: 0 1.5rem 0 0;
     width: fit-content;
+    height: fit-content;
 }
 .logo-box-container:after {
     content: '';
@@ -73,6 +77,11 @@
     height:100px;
     width:auto;
     border-radius: 4px;
+}
+.link-button-over-image {
+    position: absolute;
+    bottom: 0.2rem; right: 0.3rem;
+    z-index: 2;
 }
 .movie-info-container {
     display: flex;
