@@ -6,14 +6,14 @@ import requests
 TMDB_API_KEY = os.environ.get("TMDB_API_KEY")
 
 
-def fetch_movie_details_from_tmdb(
-    name: str,
-    year: int = 0,
+def fetch_movie_data_from_tmdb(
+    title: str,
+    year: int,
 ):
     params = {
         "api_key": TMDB_API_KEY,
         "language": "en-US",
-        "query": name,
+        "query": title,
         "inclue_adult": True,
     }
     if year:
@@ -23,6 +23,6 @@ def fetch_movie_details_from_tmdb(
         "https://api.themoviedb.org/3/search/movie",
         params=params,
         timeout=5,
-    )
+    ).json()
 
-    return pydash.get(response.json(), "results[0]", None)
+    return pydash.get(response, "results[0]", None)

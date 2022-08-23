@@ -17,10 +17,6 @@
         <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
         <script src="{{ url_for('static', filename='js/auto-increase-textarea.js') }}"></script>
 
-        <!-- ajax -->
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-        <script type="text/javascript" src="{{ url_for('static', filename='js/api-handlers.js') }}"></script>
-
         <title>Movies Ranklist (@shreyansh818bytes)</title>
     </head>
     <body>
@@ -65,7 +61,7 @@
                                 class="logo-box-container"
                             >
                                 <img
-                                    src="{{ movie.fetched_details.logo_url }}"
+                                    src="{{ movie.logo_url }}"
                                     alt="Not found"
                                     class="logo-box"
                                 />
@@ -73,12 +69,15 @@
 
                             <!-- Title and Year Headers -->
                             <div class="title-year-container">
-                                <h1 class="ellipsis-block">
-                                    {{ movie.fetched_details.title }}
-                                </h1>
+                                <span
+                                    class="ellipsis-block"
+                                    title="{{movie.title}}"
+                                >
+                                    {{ movie.title }}
+                                </span>
                                 <h3>
-                                    {% if movie.fetched_details.year %}
-                                        {{ movie.fetched_details.year }}
+                                    {% if movie.year %}
+                                        {{ movie.year }}
                                     {% else %}
                                         --
                                     {% endif %}
@@ -90,8 +89,8 @@
                                 <div class="icon-text-pill">
                                     <img src="{{ url_for('static', filename='assets/imdb-icon.svg') }}" />
                                     <p>
-                                        {% if movie.fetched_details.imdb_score %}
-                                            {{ movie.fetched_details.imdb_score }}
+                                        {% if movie.imdb_data.rating %}
+                                            {{ movie.imdb_data.rating }}
                                         {% else %}
                                             --
                                         {% endif %}
@@ -100,8 +99,8 @@
                                 <div class="icon-text-pill">
                                     <img src="{{ url_for('static', filename='assets/rt-icon.svg') }}" />
                                     <p>
-                                        {% if movie.fetched_details.rt_score %}
-                                            {{ movie.fetched_details.rt_score }}
+                                        {% if movie.rt_data.rating %}
+                                            {{ movie.rt_data.rating }}
                                         {% else %}
                                             --
                                         {% endif %}
@@ -110,8 +109,8 @@
                                 <div class="icon-text-pill">
                                     <img src="{{ url_for('static', filename='assets/tmdb-icon.svg') }}" />
                                     <p>
-                                        {% if movie.fetched_details.tmdb_score %}
-                                            {{ movie.fetched_details.tmdb_score }}
+                                        {% if movie.tmdb_data.rating %}
+                                            {{ movie.tmdb_data.rating }}
                                         {% else %}
                                             --
                                         {% endif %}
@@ -121,8 +120,8 @@
 
                             <!-- Average Score Pill -->
                             <div class="rounded-pill avg-score">
-                                {% if movie.fetched_details.average_score %}
-                                    {{ '%.1f' % movie.fetched_details.average_score|float }}
+                                {% if movie.average_score %}
+                                    {{ '%.1f' % movie.average_score|float }}
                                 {% else %}
                                     --
                                 {% endif %}
@@ -133,10 +132,10 @@
                                 <button
                                     class="icon-button delete-button"
                                     type="submit"
-                                    id="{{movie.fetched_details.id}}"
+                                    id="{{movie.id}}"
                                     onclick="onDeleteHandler(this.id, movie_delete_handler)"
                                     name="movie_id"
-                                    value="{{movie.fetched_details.id}}"
+                                    value="{{movie.id}}"
                                 >
                                     <img class="float-bottom" src="{{ url_for('static', filename='/assets/delete.svg') }}" />
                                 </button>

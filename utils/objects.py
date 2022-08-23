@@ -4,38 +4,35 @@ from typing import List
 
 class MovieList:
     class Movie:
-        def __init__(self, title: str, year: int = 0) -> None:
+        def __init__(self, search: str, title: str, year: int = 0) -> None:
+            self.id = hash(("search", search))
+            self.search_query = search
             self.title = title
             self.year = year
+            self.logo_url = "static/assets/not-found-icon.svg"
             self.details_request = {
                 "is_pending": False,
                 "is_successful": False,
             }
-            self.fetched_details = {
-                "id": "",
-                "title": "",
-                "year": 0,
-                "logo_url": "",
-                "tmdb_score": 0.0,
-                "imdb_score": 0.0,
-                "rt_score": 0.0,
-                "average_score": 0.0,
+            self.imdb_data = {
+                "rating": 0.0,
+                "poster_url": "",
+                "title_type": "",
             }
+            self.tmdb_data = {
+                "rating": 0.0,
+                "backdrop_url": "",
+            }
+            self.rt_data = {
+                "rating": 0.0,
+            }
+            self.average_score = 0.0
 
         def __eq__(self, other: object) -> bool:
-            is_both_successfully_fetched = (
-                self.details_request["is_successful"]
-                and other.details_request["is_successful"]
-            )
-            return (
-                is_both_successfully_fetched
-                and self.fetched_details["id"] == other.fetched_details["id"]
-            )
+            return self.id == other.id
 
         def __hash__(self) -> int:
-            if self.details_request["is_successful"]:
-                return hash(("tmdb_id", self.fetched_details["id"]))
-            return hash(("title", self.title, "year", self.year))
+            return hash(("id", self.id))
 
     def __init__(self, movie_names_list: List[str] = []):
         self.list: List[self.Movie] = []
@@ -43,15 +40,16 @@ class MovieList:
         self.append_from_string_list(movie_names_list)
 
     def append_from_string_list(self, movie_names_list: List[str]):
-        for movie_name in movie_names_list:
-            if not len(movie_name):
+        for movie_search in movie_names_list:
+            if not len(movie_search):
                 continue
             year = 0
+            title = movie_search
             regex_to_find_year = r"1[89][0-9][0-9]|2[0-9][0-9][0-9]"
-            match_year_list = re.search(regex_to_find_year, movie_name)
+            match_year_list = re.search(regex_to_find_year, movie_search)
             if match_year_list:
                 year = int(match_year_list[0])
-                movie_name = re.sub(regex_to_find_year, "", movie_name)
-            movie = self.Movie(movie_name, year)
+                title = re.sub(regex_to_find_year, "", movie_search)
+            movie = self.Movie(movie_search, title, year)
             self.list.append(movie)
             self.total += 1
