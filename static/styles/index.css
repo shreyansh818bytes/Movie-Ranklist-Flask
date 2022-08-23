@@ -2,10 +2,9 @@
 .app-container {
     position: relative;
     display: flex;
-    flex-wrap: wrap;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
+    flex-direction: column;
+    justify-content: start;
+    align-items: start;
     height: 100vh;
     width: 100vw;
 }
@@ -75,16 +74,21 @@
     width:auto;
     border-radius: 4px;
 }
+.movie-info-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
 .title-year-container {
     display: flex;
     flex-direction: column;
     justify-content: start;
     align-items: start;
     margin-top: 0.2rem;
+    width: 100%;
 }
 .title-year-container > span {
     margin: 0;
-    max-width: 19rem;
     font-family: 'Arial';
     font-style: normal;
     font-size: 1.5rem;
@@ -97,7 +101,7 @@
     margin: 0;
     font-family: 'Arial';
     font-style: normal;
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     font-weight: 400;
     color: #646464;
 }
@@ -144,7 +148,6 @@
 #input-container {
     padding: 1rem;
     text-align: center;
-    min-width: 25rem;
     max-height: 90vh;
 }
 #output-container {
@@ -156,7 +159,50 @@
 }
 #text-area-input  {
     margin-top: 1rem;
-    min-height: 6rem;
+    min-height: 7rem;
     max-height: 83vh;
     overflow: auto;
+}
+
+/* Media Queries */
+@media (min-width: 768px) {
+    .movie-container {
+        flex-direction: row;
+    }
+    .logo-box {
+        height: 150px;
+    }
+    .movie-info-container {
+        height: auto;
+        justify-content: space-between;
+        align-items: start;
+    }
+    .title-year-container > span {
+        font-size: 1.6rem;
+        line-height: 1.9rem;
+        padding-right: 6.75rem;
+    }
+}
+@media (min-width: 992px) {
+    .app-container {
+        flex-direction: row;
+        justify-content: stretch;
+    }
+    #input-container {
+        flex: 4
+    }
+    #output-container {
+        flex: 6
+    }
+    .logo-box {
+        height: 100px;
+    }
+}
+@media (min-width: 1200px) {
+    .logo-box {
+        height: 150px;
+    }
+    .title-year-container > h3 {
+        font-size: 1.5rem;
+    }
 }

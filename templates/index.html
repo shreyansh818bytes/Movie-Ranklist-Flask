@@ -67,51 +67,54 @@
                                 />
                             </div>
 
-                            <!-- Title and Year Headers -->
-                            <div class="title-year-container text-warp">
-                                <span>
-                                    {{ movie.title }}
-                                </span>
-                                <h3>
-                                    {% if movie.year %}
-                                        {{ movie.year }}
-                                    {% else %}
-                                        --
-                                    {% endif %}
-                                </h3>
-                            </div>
+                            <!-- Flex Container for responsiveness -->
+                            <div class="movie-info-container">
+                                <!-- Title and Year Headers -->
+                                <div class="title-year-container text-warp">
+                                    <span>
+                                        {{ movie.title }}
+                                    </span>
+                                    <h3>
+                                        {% if movie.year %}
+                                            {{ movie.year }}
+                                        {% else %}
+                                            --
+                                        {% endif %}
+                                    </h3>
+                                </div>
 
-                            <!-- Individual Score Pills -->
-                            <div class="d-inline-flex my-1">
-                                <div class="icon-text-pill">
-                                    <img src="{{ url_for('static', filename='assets/imdb-icon.svg') }}" />
-                                    <p>
-                                        {% if movie.imdb_data.rating %}
-                                            {{ movie.imdb_data.rating }}
-                                        {% else %}
-                                            --
-                                        {% endif %}
-                                    </p>
-                                </div>
-                                <div class="icon-text-pill">
-                                    <img src="{{ url_for('static', filename='assets/rt-icon.svg') }}" />
-                                    <p>
-                                        {% if movie.rt_data.rating %}
-                                            {{ movie.rt_data.rating }}
-                                        {% else %}
-                                            --
-                                        {% endif %}
-                                    </p>
-                                </div>
-                                <div class="icon-text-pill">
-                                    <img src="{{ url_for('static', filename='assets/tmdb-icon.svg') }}" />
-                                    <p>
-                                        {% if movie.tmdb_data.rating %}
-                                            {{ movie.tmdb_data.rating }}
-                                        {% else %}
-                                            --
-                                        {% endif %}
-                                    </p>
+                                <!-- Individual Score Pills -->
+                                <div class="d-inline-flex my-1">
+                                    <div class="icon-text-pill">
+                                        <img src="{{ url_for('static', filename='assets/imdb-icon.svg') }}" />
+                                        <p>
+                                            {% if movie.imdb_data.rating %}
+                                                {{ movie.imdb_data.rating }}
+                                            {% else %}
+                                                --
+                                            {% endif %}
+                                        </p>
+                                    </div>
+                                    <div class="icon-text-pill">
+                                        <img src="{{ url_for('static', filename='assets/rt-icon.svg') }}" />
+                                        <p>
+                                            {% if movie.rt_data.rating %}
+                                                {{ movie.rt_data.rating }}
+                                            {% else %}
+                                                --
+                                            {% endif %}
+                                        </p>
+                                    </div>
+                                    <div class="icon-text-pill">
+                                        <img src="{{ url_for('static', filename='assets/tmdb-icon.svg') }}" />
+                                        <p>
+                                            {% if movie.tmdb_data.rating %}
+                                                {{ movie.tmdb_data.rating }}
+                                            {% else %}
+                                                --
+                                            {% endif %}
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
 
