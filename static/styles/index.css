@@ -88,6 +88,20 @@
     flex-direction: column;
     width: 100%;
 }
+.movie-rank-indicator {
+    position: absolute;
+    top: 0; left: 0;
+    background-color: rgba(43, 43, 43, 0.75);
+    border-radius: 0px 0px 5px 0px;
+    font-size: 1rem;
+    min-width: 1.4rem;
+    height: 1.4rem;
+    padding: 0px 4px;
+    color: #afafaf;
+    font-family: Arial;
+    font-weight: 700;
+    text-align: center;
+}
 .title-year-container {
     display: flex;
     flex-direction: column;
