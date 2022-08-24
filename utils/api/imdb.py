@@ -3,9 +3,35 @@ import os
 import pydash
 import requests
 
+from .exception_handler import handle_api_exception
+
 IMDB_API_KEY = os.environ.get("IMDB_API_KEY")
 
 
+def pick_top_valid_result(results):
+    for result in results:
+        if (
+            "titleType" in result
+            and result["titleType"]
+            in [
+                "movie",
+                "tvSeries",
+                "tvEpisode",
+                "tvMiniSeries",
+                "tvMovie",
+                "tvSpecial",
+                "short",
+                "tvShort",
+            ]
+            and "id" in result
+            and "title" in result
+            and str(result["id"]).find("title") != -1
+        ):
+            return result
+    return None
+
+
+@handle_api_exception
 def get_top_search_result(q: str):
     url = "https://imdb8.p.rapidapi.com/title/find"
     querystring = {
@@ -18,9 +44,12 @@ def get_top_search_result(q: str):
 
     response = requests.get(url, headers=headers, params=querystring).json()
 
-    return pydash.get(response, "results[0]", None)
+    top_results = pydash.get(response, "results", None)
+
+    return pick_top_valid_result(top_results)
 
 
+@handle_api_exception
 def fetch_movie_data_from_imdb(query: str):
     top_result = get_top_search_result(query)
 

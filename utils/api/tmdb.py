@@ -3,9 +3,12 @@ import os
 import pydash
 import requests
 
+from .exception_handler import handle_api_exception
+
 TMDB_API_KEY = os.environ.get("TMDB_API_KEY")
 
 
+@handle_api_exception
 def fetch_movie_data_from_tmdb(
     title: str,
     year: int,
