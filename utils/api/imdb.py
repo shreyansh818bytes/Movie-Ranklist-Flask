@@ -72,4 +72,5 @@ def fetch_movie_data_from_imdb(query: str):
     response = requests.get(url, headers=headers, params=query_params).json()
     response["image_url"] = image_url
     response["title_type"] = title_type
+    response["page_url"] = "https://www.imdb.com" + top_result["id"]
     return response

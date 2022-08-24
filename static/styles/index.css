@@ -44,6 +44,14 @@
 .filter-neutral {
     filter: invert(35%) sepia(68%) saturate(10%) hue-rotate(318deg) brightness(94%) contrast(92%);
 }
+.custom-link {
+    color: black;
+    text-decoration: none;
+}
+.custom-link:hover {
+    color: black;
+    text-decoration: underline;
+}
 
 /* Movie Card classes */
 .movie-container {

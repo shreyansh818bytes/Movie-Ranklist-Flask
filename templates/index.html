@@ -101,36 +101,30 @@
 
                                 <!-- Individual Score Pills -->
                                 <div class="d-inline-flex my-1">
-                                    <div class="icon-text-pill">
-                                        <img src="{{ url_for('static', filename='assets/imdb-icon.svg') }}" />
-                                        <p>
-                                            {% if movie.imdb_data.rating %}
+                                    {% if movie.imdb_data.rating %}
+                                        <a href="{{movie.imdb_data.page_url}}" target="_blank" class="icon-text-pill custom-link">
+                                            <img src="{{ url_for('static', filename='assets/imdb-icon.svg') }}" />
+                                            <p>
                                                 {{ movie.imdb_data.rating }}
-                                            {% else %}
-                                                --
-                                            {% endif %}
-                                        </p>
-                                    </div>
-                                    <div class="icon-text-pill">
-                                        <img src="{{ url_for('static', filename='assets/rt-icon.svg') }}" />
-                                        <p>
-                                            {% if movie.rt_data.rating %}
+                                            </p>
+                                        </a>
+                                    {% endif %}
+                                    {% if movie.rt_data.rating %}
+                                        <a href="{{movie.rt_data.page_url}}" target="_blank" class="icon-text-pill custom-link">
+                                            <img src="{{ url_for('static', filename='assets/rt-icon.svg') }}" />
+                                            <p>
                                                 {{ movie.rt_data.rating }}
-                                            {% else %}
-                                                --
-                                            {% endif %}
-                                        </p>
-                                    </div>
-                                    <div class="icon-text-pill">
-                                        <img src="{{ url_for('static', filename='assets/tmdb-icon.svg') }}" />
-                                        <p>
-                                            {% if movie.tmdb_data.rating %}
+                                            </p>
+                                        </a>
+                                    {% endif %}
+                                    {% if movie.tmdb_data.rating %}
+                                        <a href="{{movie.tmdb_data.page_url}}" target="_blank" class="icon-text-pill custom-link">
+                                            <img src="{{ url_for('static', filename='assets/tmdb-icon.svg') }}" />
+                                            <p>
                                                 {{ movie.tmdb_data.rating }}
-                                            {% else %}
-                                                --
-                                            {% endif %}
-                                        </p>
-                                    </div>
+                                            </p>
+                                        </a>
+                                    {% endif %}
                                 </div>
                             </div>
 

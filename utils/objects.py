@@ -18,13 +18,16 @@ class MovieList:
                 "rating": 0.0,
                 "poster_url": "",
                 "title_type": "",
+                "page_url": "/not-found",
             }
             self.tmdb_data = {
                 "rating": 0.0,
                 "backdrop_url": "",
+                "page_url": "/not-found",
             }
             self.rt_data = {
                 "rating": 0.0,
+                "page_url": "/not-found",
             }
             self.average_score = 0.0
 

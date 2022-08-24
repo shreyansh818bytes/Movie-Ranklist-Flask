@@ -51,10 +51,14 @@ def map_imdb_data_to_movie_object(movie_data, movie: MovieList.Movie) -> None:
     if "rating" in movie_data:
         movie.imdb_data["rating"] = movie_data["rating"]
     movie.imdb_data["title_type"] = movie_data["title_type"]
+    movie.imdb_data["page_url"] = movie_data["page_url"]
 
 
 def map_tmdb_data_to_movie_object(movie_data, movie: MovieList.Movie) -> None:
     movie.tmdb_data["rating"] = movie_data["vote_average"]
+    movie.tmdb_data["page_url"] = "https://www.themoviedb.org/movie/" + str(
+        movie_data["id"]
+    )
     if movie_data["backdrop_path"] is not None:
         tmdb_image_url = (
             "https://image.tmdb.org/t/p/original" + movie_data["backdrop_path"]
@@ -63,8 +67,10 @@ def map_tmdb_data_to_movie_object(movie_data, movie: MovieList.Movie) -> None:
         movie.logo_url = tmdb_image_url
 
 
-def map_rt_data_to_movie_object(rating, movie: MovieList.Movie) -> None:
-    movie.rt_data["rating"] = rating
+def map_rt_data_to_movie_object(movie_data, movie: MovieList.Movie) -> None:
+    movie.rt_data["rating"] = movie_data["rating"]
+    if len(movie_data["page_url"]):
+        movie.rt_data["page_url"] = movie_data["page_url"]
 
 
 # API Helper.
