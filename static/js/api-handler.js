@@ -49,6 +49,9 @@ function postDeleteRequest(movie_id) {
       if (response.message && response.data?.total != undefined) {
         const movie_card = document.getElementById(movie_id);
         movie_card.remove();
+        $("#movie-total").text(
+          `${response.data.total.toString()} Movies Listed`
+        );
       }
     });
 }

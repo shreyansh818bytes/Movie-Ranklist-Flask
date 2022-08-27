@@ -9,6 +9,9 @@
     width: 100vw;
 }
 .head-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     color: white;
     background-color: #2b2b2b;
     border-radius: 0.25rem 0.25rem 0 0;
@@ -17,8 +20,14 @@
 .head-container>h2 {
     margin: 0;
     font-weight: 400;
-    font-size: 1.7rem;
+    font-size: 1.5rem;
     padding: 0.2rem;
+}
+.head-container>h3 {
+    margin: 0;
+    font-weight: 300;
+    font-size: 1.1rem;
+    color: #646464;
 }
 .movie-list-container {
     height: 100%;
@@ -212,6 +221,12 @@
         font-size: 1.6rem;
         line-height: 1.9rem;
         padding-right: 6.75rem;
+    }
+    .head-container>h2 {
+        font-size: 1.7rem;
+    }
+    .head-container>h3 {
+        font-size: 1.3rem;
     }
 }
 @media (min-width: 992px) {
