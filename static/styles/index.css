@@ -5,7 +5,7 @@
     flex-direction: column;
     justify-content: start;
     align-items: start;
-    height: 100vh;
+    height: 100%;
     width: 100vw;
 }
 .head-container {
@@ -35,6 +35,19 @@
     padding: 1rem;
     overflow-y: auto;
     min-width: 22rem;
+}
+.footer-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+.sign {
+    margin-bottom: 0.6rem;
+    width: fit-content;
+}
+footer i {
+    font-size: 24px !important;
 }
 
 /* Reusable/Common classes */
@@ -233,6 +246,7 @@
     .app-container {
         flex-direction: row;
         justify-content: stretch;
+        margin-bottom: 3rem;
     }
     #input-container {
         flex: 4
@@ -242,6 +256,13 @@
     }
     .logo-box {
         height: 100px;
+    }
+    .footer-container {
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    .icons {
+        justify-content: flex-end;
     }
 }
 @media (min-width: 1200px) {
