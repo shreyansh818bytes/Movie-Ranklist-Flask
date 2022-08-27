@@ -6,14 +6,15 @@ from .objects import MovieList
 
 
 # Handlers.
-def movie_search_handler(request_form):
+def movie_search_handler(data):
     movie_list = []
-    if request_form["single_text"]:
-        movie_list.append(request_form["single_text"])
-    if request_form["multiple_text"]:
-        movie_names_string = request_form["multiple_text"]
+    if data["searchStringList"]:
         movie_list.extend(
-            [movie.replace("\r", "") for movie in movie_names_string.split("\n")]
+            [
+                movie_string.replace("\r", "")
+                for movie_string in data["searchStringList"]
+                if len(movie_string)
+            ]
         )
     return movie_list
 

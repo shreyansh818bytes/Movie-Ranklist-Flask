@@ -4,18 +4,21 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-        <!-- Bootstrap CSS -->
+        <!-- Bootstrap -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 
         <!-- Font Awsome Icons -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-        <!-- Custom CSS -->
+        <!-- CSS -->
         <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/index.css') }}" />
 
         <!-- jQuery -->
         <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
-        <script src="{{ url_for('static', filename='js/auto-increase-textarea.js') }}"></script>
+
+        <!-- JS -->
+        <script type="text/javascript" src="{{ url_for('static', filename='js/auto-increase-textarea.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/api-handler.js') }}"></script>
 
         <title>Movies Ranklist (@shreyansh818bytes)</title>
     </head>
@@ -23,16 +26,19 @@
         <div class="app-container">
             <!-- Input Box -->
             <div class="container" id="input-container">
-                <form action="/search" method="post">
+                <form
+                    action="javascript:searchPostRequest(single_text_input, text_area_input, '{{app_url}}')"
+                >
                     <div class="input-group">
                         <input
                             class="form-control"
                             type="search"
                             name="single_text"
+                            id="single_text_input"
                             placeholder="Mono movie name goes here!"
                         >
                         <span class="input-group-append">
-                            <button class="btn btn-primary" type="submit" name="Go">
+                            <button class="btn btn-primary" type="submit" id="submit_btn" name="submit_btn">
                                 <i class="fa fa-search"></i>
                             </button>
                         </span>
@@ -40,7 +46,7 @@
 
                     <textarea
                         class="form-control"
-                        id="text-area-input"
+                        id="text_area_input"
                         name="multiple_text"
                         placeholder="Multiple movie names can be entered here!&#10;Add year of release in movie name for better search results."
                     ></textarea>
