@@ -1,6 +1,4 @@
-import os
-
-from flask import Flask, redirect, render_template, request, session
+from flask import Flask, render_template, request, session
 
 from flask_session import Session
 from utils.helpers import (
@@ -38,19 +36,26 @@ def search():
         )
 
     return Response(
-        response={"message": "Incorrect request body."},
+        response={"message": "Request body not found."},
         status=400,
     )
 
 
 @app.route("/delete", methods=["POST"])
 def delete():
-    if request.form:
+    if request.json:
         movie_delete_handler(
-            movie_id=request.form["movie_id"], movie_list=session["movies_list"]
+            movie_id=request.json["movieId"], movie_list=session["movies_list"]
         )
 
-    return redirect("/")
+        return Response(
+            response={
+                "message": "Movie deleted successfully!",
+                "data": {"total": len(session["movies_list"].list)},
+            }
+        )
+
+    return Response(response={"message": "Response body not found."}, status=400)
 
 
 @app.route("/", methods=["GET"])
@@ -58,9 +63,7 @@ def index():
     if not session.get("movies_list"):
         session["movies_list"] = MovieList()
 
-    return render_template(
-        "index.html", movies_list=session["movies_list"], app_url=os.environ.get("URL")
-    )
+    return render_template("index.html", movies_list=session["movies_list"])
 
 
 if __name__ == "__main__":

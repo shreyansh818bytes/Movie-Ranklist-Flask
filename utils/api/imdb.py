@@ -46,6 +46,8 @@ def get_top_search_result(q: str):
 
     top_results = pydash.get(response, "results", None)
 
+    if top_results is None:
+        return None
     return pick_top_valid_result(top_results)
 
 

@@ -27,7 +27,7 @@
             <!-- Input Box -->
             <div class="container" id="input-container">
                 <form
-                    action="javascript:searchPostRequest(single_text_input, text_area_input, '{{app_url}}')"
+                    action="javascript:postSearchRequest(single_text_input, text_area_input)"
                 >
                     <div class="input-group">
                         <input
@@ -61,7 +61,7 @@
 
                 <div class="container border movie-list-container">
                     {% for movie in movies_list.list %}
-                        <div class="container border movie-container">
+                        <div class="container border movie-container" id="{{movie.id}}">
                             <!-- Movie Backdrop -->
                             <div
                                 class="logo-box-container"
@@ -144,18 +144,15 @@
                             </div>
 
                             <!-- Delete Button -->
-                            <form action="/delete" method="post">
-                                <button
-                                    class="icon-button delete-button"
-                                    type="submit"
-                                    id="{{movie.id}}"
-                                    onclick="onDeleteHandler(this.id, movie_delete_handler)"
-                                    name="movie_id"
-                                    value="{{movie.id}}"
-                                >
-                                    <img class="float-bottom" src="{{ url_for('static', filename='/assets/delete.svg') }}" />
-                                </button>
-                            </form>
+                            <button
+                                class="icon-button delete-button float-bottom"
+                                type="submit"
+                                name="{{movie.id}}"
+                                id="{{movie.id}}-dlt-btn"
+                                onclick="postDeleteRequest(this.name)"
+                            >
+                                <img src="{{ url_for('static', filename='/assets/delete.svg') }}" />
+                            </button>
                         </div>
                     {% endfor %}
                 </div>
