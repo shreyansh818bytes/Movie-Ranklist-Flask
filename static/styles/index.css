@@ -35,6 +35,7 @@
     padding: 1rem;
     overflow-y: auto;
     min-width: 22rem;
+    max-height: 90vh;
 }
 .footer-container {
     display: flex;
