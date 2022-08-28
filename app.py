@@ -15,6 +15,11 @@ app.config["SESSION_PERMANENT"] = True
 Session(app)
 
 
+def create_session():
+    if session.get("movies_list", None) is None:
+        session["movies_list"] = MovieList()
+
+
 @app.route("/ping", methods=["GET"])
 def ping():
     return "pong"
@@ -22,6 +27,7 @@ def ping():
 
 @app.route("/search", methods=["POST"])
 def search():
+    create_session()
     if request.json:
         movie_list_in_search = movie_search_handler(request.json)
         session["movies_list"].append_from_string_list(movie_list_in_search)
@@ -61,8 +67,7 @@ def delete():
 
 @app.route("/", methods=["GET"])
 def index():
-    if not session.get("movies_list"):
-        session["movies_list"] = MovieList()
+    create_session()
 
     return render_template("index.html", movies_list=session["movies_list"])
 
