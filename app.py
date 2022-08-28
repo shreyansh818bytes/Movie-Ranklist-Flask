@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, session
+from waitress import serve
 
 from flask_session import Session
 from utils.helpers import (
@@ -67,4 +68,5 @@ def index():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", debug=False, threaded=True)
+    # app.run(host="0.0.0.0", port=5000, debug=False, threaded=True)
+    serve(app, host="0.0.0.0")
