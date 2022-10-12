@@ -10,6 +10,7 @@ waitress = "*"
 pydash = "*"
 requests = "*"
 rotten-tomatoes-scraper = "*"
+colorama = "*"
 
 [dev-packages]
 black = "*"
