@@ -6,7 +6,7 @@
     justify-content: start;
     align-items: start;
     height: 100%;
-    width: 100vw;
+    width: 100%;
 }
 .head-container {
     display: flex;
