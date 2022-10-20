@@ -73,5 +73,4 @@ def index():
 
 
 if __name__ == "__main__":
-    # app.run(host="0.0.0.0", port=5000, debug=False, threaded=True)
-    serve(app, host="0.0.0.0")
+    serve(app, host="0.0.0.0", port=5000)
