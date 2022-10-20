@@ -1,3 +1,5 @@
+import os
+
 from flask import Flask, render_template, request, session
 from waitress import serve
 
@@ -8,6 +10,8 @@ from utils.helpers import (
     movie_search_handler,
 )
 from utils.objects import MovieList, Response
+
+PORT = os.environ.get("PORT")
 
 app = Flask(__name__)
 app.config["SESSION_TYPE"] = "filesystem"
@@ -73,4 +77,4 @@ def index():
 
 
 if __name__ == "__main__":
-    serve(app, host="0.0.0.0")
+    serve(app, host="0.0.0.0", port=PORT)
