@@ -1,6 +1,6 @@
 # Movie Ranklist
 ## Setup
-### Step 1: Install virtual environment and package manager ***pipenv***
+### Step 1: Install virtual environment
 ```
-pip install pipenv
+pip install virtualenv
 ```
