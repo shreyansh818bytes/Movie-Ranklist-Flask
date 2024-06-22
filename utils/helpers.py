@@ -1,6 +1,5 @@
 # App wide helper and handler functions
 from .api.imdb import fetch_movie_data_from_imdb
-from .api.rt import fetch_movie_data_from_rt
 from .api.tmdb import fetch_movie_data_from_tmdb
 from .objects import MovieList
 
@@ -50,13 +49,13 @@ def map_imdb_data_to_movie_object(movie_data, movie: MovieList.Movie) -> None:
         movie.logo_url = movie_data["image_url"]
         movie.imdb_data["poster_url"] = movie_data["image_url"]
     if "rating" in movie_data:
-        movie.imdb_data["rating"] = movie_data["rating"]
+        movie.imdb_data["rating"] = round(float(movie_data["rating"]), 1)
     movie.imdb_data["title_type"] = movie_data["title_type"]
     movie.imdb_data["page_url"] = movie_data["page_url"]
 
 
 def map_tmdb_data_to_movie_object(movie_data, movie: MovieList.Movie) -> None:
-    movie.tmdb_data["rating"] = movie_data["vote_average"]
+    movie.tmdb_data["rating"] = round(float(movie_data["vote_average"]), 1)
     movie.tmdb_data["page_url"] = "https://www.themoviedb.org/movie/" + str(
         movie_data["id"]
     )
@@ -69,7 +68,7 @@ def map_tmdb_data_to_movie_object(movie_data, movie: MovieList.Movie) -> None:
 
 
 def map_rt_data_to_movie_object(movie_data, movie: MovieList.Movie) -> None:
-    movie.rt_data["rating"] = movie_data["rating"]
+    movie.rt_data["rating"] = round(float(movie_data["rating"]), 1)
     if len(movie_data["page_url"]):
         movie.rt_data["page_url"] = movie_data["page_url"]
 
@@ -98,12 +97,13 @@ def fetch_movie_details_helper(movie_list: MovieList):
                 )
 
             # Fetch data from Rotten Tomatoes
-            map_rt_data_to_movie_object(
-                fetch_movie_data_from_rt(
-                    movie_title=movie.title,
-                ),
-                movie,
-            )
+            # Scrapper is not supported anymore. Disabling Rotten Tomatoes ratings for now.
+            # map_rt_data_to_movie_object(
+            #     fetch_movie_data_from_rt(
+            #         movie_title=movie.title,
+            #     ),
+            #     movie,
+            # )
 
             movie.details_request["is_successful"] = True
 
