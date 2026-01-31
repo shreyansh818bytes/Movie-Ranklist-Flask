@@ -1,11 +1,8 @@
-import os
-
 import pydash
 import requests
 
+from ..env_variables import EnvVariable
 from .exception_handler import handle_api_exception
-
-IMDB_API_KEY = os.environ.get("IMDB_API_KEY")
 
 
 def pick_top_valid_result(results):
@@ -38,7 +35,7 @@ def get_top_search_result(q: str):
         "q": q,
     }
     headers = {
-        "X-RapidAPI-Key": IMDB_API_KEY,
+        "X-RapidAPI-Key": EnvVariable.IMDB_API_KEY.value,
         "X-RapidAPI-Host": "imdb8.p.rapidapi.com",
     }
 
@@ -52,27 +49,49 @@ def get_top_search_result(q: str):
 
 
 @handle_api_exception
-def fetch_movie_data_from_imdb(query: str):
+def search_imdb(query: str):
+    """
+    Search IMDb for a movie and return metadata only (no rating).
+    Returns: { id, title, year, image_url, page_url } or None
+    """
     top_result = get_top_search_result(query)
 
     if top_result is None:
         return None
-    # Extract metadata
-    image_url = pydash.get(top_result, "image.url", "")
-    title_type = pydash.get(top_result, "titleType", "")
-    # Extract title id
-    title_id = top_result["id"]
-    title_const = str(title_id).replace("/", "").replace("title", "")
 
-    # Get movie data
+    # Extract title id (tconst format like tt0133093)
+    title_id = top_result["id"]
+    tconst = str(title_id).replace("/", "").replace("title", "")
+
+    return {
+        "id": tconst,
+        "title": pydash.get(top_result, "title", ""),
+        "year": pydash.get(top_result, "year", None),
+        "image_url": pydash.get(top_result, "image.url", ""),
+        "page_url": f"https://www.imdb.com{title_id}",
+        "title_type": pydash.get(top_result, "titleType", ""),
+    }
+
+
+@handle_api_exception
+def get_imdb_rating(tconst: str):
+    """
+    Get IMDb rating for a movie by tconst (e.g., tt0133093).
+    Returns: { rating, page_url } or None
+    """
     url = "https://imdb8.p.rapidapi.com/title/get-ratings"
-    query_params = {"tconst": title_const}
+    query_params = {"tconst": tconst}
     headers = {
-        "X-RapidAPI-Key": IMDB_API_KEY,
+        "X-RapidAPI-Key": EnvVariable.IMDB_API_KEY.value,
         "X-RapidAPI-Host": "imdb8.p.rapidapi.com",
     }
     response = requests.get(url, headers=headers, params=query_params).json()
-    response["image_url"] = image_url
-    response["title_type"] = title_type
-    response["page_url"] = "https://www.imdb.com" + top_result["id"]
-    return response
+
+    rating = pydash.get(response, "rating", None)
+    if rating is not None:
+        rating = round(float(rating), 1)
+
+    return {
+        "rating": rating,
+        "page_url": f"https://www.imdb.com/title/{tconst}/",
+    }

@@ -1,18 +1,49 @@
-# Pull the python image
-FROM python:3.8-alpine
+# Build stage
+FROM python:3.12-slim AS builder
 
-# Copy requirements.txt
-COPY ./requirements.txt /app/requirements.txt
-
-# Switch working directory
 WORKDIR /app
 
-# Install python dependencies
-RUN pip install -r requirements.txt
+# Install build dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc \
+    libxml2-dev \
+    libxslt-dev \
+    && rm -rf /var/lib/apt/lists/*
 
-# Copy the code
-COPY . /app
+# Copy requirements first for better caching
+COPY requirements.txt .
 
-# Configure the container to run in an executed manner
-ENTRYPOINT ["python"]
-CMD ["app.py"]
+# Create virtual environment and install dependencies
+RUN python -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
+
+# Production stage
+FROM python:3.12-slim
+
+WORKDIR /app
+
+# Install runtime dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libxml2 \
+    libxslt1.1 \
+    && rm -rf /var/lib/apt/lists/* \
+    && useradd --create-home --shell /bin/bash appuser
+
+# Copy virtual environment from builder
+COPY --from=builder /opt/venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+
+# Copy application code
+COPY --chown=appuser:appuser . .
+
+# Switch to non-root user
+USER appuser
+
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
+# Run the application
+CMD ["python", "app.py"]

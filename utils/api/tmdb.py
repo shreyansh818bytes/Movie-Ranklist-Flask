@@ -1,11 +1,8 @@
-import os
-
 import pydash
 import requests
 
+from ..env_variables import EnvVariable
 from .exception_handler import handle_api_exception
-
-TMDB_API_KEY = os.environ.get("TMDB_API_KEY")
 
 
 @handle_api_exception
@@ -14,10 +11,10 @@ def fetch_movie_data_from_tmdb(
     year: int,
 ):
     params = {
-        "api_key": TMDB_API_KEY,
+        "api_key": EnvVariable.TMDB_API_KEY.value,
         "language": "en-US",
         "query": title,
-        "inclue_adult": True,
+        "include_adult": True,
     }
     if year:
         params["year"] = year

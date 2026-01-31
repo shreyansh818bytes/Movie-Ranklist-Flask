@@ -1,0 +1,231 @@
+/* Auth Page Base Styles - aligned with app theme */
+.auth-page {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 50%, #020617 100%);
+}
+
+/* Illustration Styles */
+.illustration-wrapper {
+    text-align: center;
+    padding: 2rem;
+}
+
+.auth-illustration {
+    width: 100%;
+    max-width: 400px;
+    height: auto;
+    margin-bottom: 1.5rem;
+    filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.3));
+    animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-15px);
+    }
+}
+
+.illustration-title {
+    color: #fff;
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.illustration-subtitle {
+    color: #94a3b8;
+    font-size: 1.1rem;
+    max-width: 350px;
+    margin: 0 auto;
+}
+
+/* Auth Card Styles */
+.auth-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    box-shadow: 0 20px 60px rgba(15, 23, 42, 0.35);
+}
+
+.auth-card-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.brand-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #1e293b;
+    text-decoration: none;
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    transition: color 0.2s;
+}
+
+.brand-link:hover {
+    color: #f59e0b;
+}
+
+.brand-link i {
+    font-size: 1.5rem;
+}
+
+.auth-card-header h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 0.25rem;
+}
+
+.auth-card-header p {
+    color: #6c757d;
+    margin-bottom: 0;
+}
+
+/* Form Styles */
+.auth-card .form-label {
+    font-weight: 500;
+    color: #1e293b;
+    margin-bottom: 0.5rem;
+}
+
+.auth-card .input-group-text {
+    background-color: #f8f9fa;
+    border-right: none;
+    color: #6c757d;
+}
+
+.auth-card .form-control {
+    border-left: none;
+    padding: 0.75rem 1rem;
+}
+
+.auth-card .form-control:focus {
+    box-shadow: none;
+    border-color: #ced4da;
+}
+
+.auth-card .input-group:focus-within .input-group-text,
+.auth-card .input-group:focus-within .form-control {
+    border-color: #f59e0b;
+}
+
+.auth-card .input-group:focus-within .input-group-text {
+    color: #f59e0b;
+}
+
+.auth-card .btn-outline-secondary {
+    border-left: none;
+    background: #fff;
+}
+
+.auth-card .btn-outline-secondary:hover {
+    background: #f8f9fa;
+    color: #1e293b;
+}
+
+.auth-card .form-text {
+    color: #6c757d;
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+}
+
+/* Primary Button */
+.auth-card .btn-primary {
+    background-color: #1e293b;
+    border-color: #1e293b;
+    padding: 0.875rem 1.5rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.auth-card .btn-primary:hover:not(:disabled) {
+    background-color: #f59e0b;
+    border-color: #f59e0b;
+    color: #0f172a;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(245, 158, 11, 0.4);
+}
+
+.auth-card .btn-primary:disabled {
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+
+/* Alert Styles */
+.auth-card .alert {
+    border-radius: 10px;
+    border: none;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+.auth-card .alert-success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.auth-card .alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+/* Password Match Indicator */
+.password-match-indicator {
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+/* Auth Footer */
+.auth-footer {
+    text-align: center;
+    padding-top: 1rem;
+    border-top: 1px solid #e9ecef;
+    margin-top: 1rem;
+}
+
+.auth-footer p {
+    margin-bottom: 0;
+    color: #6c757d;
+}
+
+.auth-footer a {
+    color: #1e293b;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.auth-footer a:hover {
+    color: #f59e0b;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 991.98px) {
+    .auth-card {
+        margin: 1rem;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .auth-card {
+        padding: 1.5rem;
+        margin: 0.5rem;
+    }
+
+    .auth-card-header h1 {
+        font-size: 1.5rem;
+    }
+
+    .brand-link {
+        font-size: 1.1rem;
+    }
+}
