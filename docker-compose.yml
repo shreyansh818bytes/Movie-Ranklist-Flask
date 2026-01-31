@@ -9,9 +9,6 @@ services:
       - .:/app
     env_file:
       - config/.env.local
-    environment:
-      - PORT=8000
-      - FLASK_DEBUG=1
     depends_on:
       db:
         condition: service_healthy
