@@ -646,27 +646,134 @@ footer i {
 /* ============= */
 /* Media Queries */
 /* ============= */
+
+/* Mobile devices - show hover state by default (no hover on touch) */
 @media (max-width: 767px) {
     .app-container {
         flex-direction: column;
     }
+
+    /* Remove hover transform and border effect on mobile */
     .movie-container {
         padding: 0.5rem;
+        border: 1px solid var(--color-border);
+        transform: none !important;
     }
+
+    .movie-container:hover {
+        border-color: var(--color-border);
+        box-shadow: var(--card-shadow);
+        transform: none;
+    }
+
+    /* Show backdrop effect by default on mobile */
+    .movie-container::before,
+    .movie-container::after {
+        opacity: 0.5;
+    }
+
+    /* Disable backdrop hover intensification on mobile */
+    .movie-container:hover::before,
+    .movie-container:hover::after {
+        opacity: 0.5;
+    }
+
+    /* Show poster link button by default on mobile */
+    .link-button-over-image {
+        opacity: 1;
+        background: rgba(0, 0, 0, 0.6);
+        border-radius: 4px;
+        padding: 2px;
+    }
+
+    /* Show action buttons by default on mobile */
+    .card-actions {
+        opacity: 1;
+        position: relative;
+        bottom: auto;
+        right: auto;
+        margin-left: auto;
+        flex-shrink: 0;
+    }
+
+    /* Make action buttons slightly larger for touch targets */
+    .action-btn {
+        width: 2rem;
+        height: 2rem;
+        min-width: 44px;
+        min-height: 44px;
+    }
+
+    .action-btn i {
+        font-size: 16px;
+    }
+
+    /* Always show external link icons on rating pills (mobile) */
+    .icon-text-pill .link-icon {
+        opacity: 1;
+    }
+
+    /* Adjust average score positioning for mobile layout */
     .avg-score {
         position: relative;
         top: auto;
         right: auto;
         margin-left: auto;
+        flex-shrink: 0;
     }
-    .card-actions {
-        position: relative;
-        bottom: auto;
-        right: auto;
-        margin-left: 0.5rem;
+
+    /* Movie card layout adjustment for mobile */
+    .movie-container {
+        flex-wrap: wrap;
     }
+
+    .movie-info-container {
+        flex: 1;
+        min-width: 0;
+    }
+
     .title-year-container > span {
         font-size: 0.85rem;
+    }
+
+    /* Rating pills wrap on mobile */
+    .ratings-container {
+        flex-wrap: wrap;
+    }
+
+    /* Footer adjustments */
+    .footer-container {
+        gap: 0.5rem;
+    }
+
+    /* Input card adjustments */
+    .input-card {
+        padding: 1rem;
+    }
+
+    .input-card h4 {
+        font-size: 1rem;
+    }
+
+    /* Reduce textarea height on mobile */
+    #text_area_input {
+        min-height: 80px;
+    }
+
+    /* Make buttons full width on very small screens */
+    .multi-input-section .d-flex {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .multi-input-section .btn-accent {
+        width: 100%;
+    }
+
+    /* Movie list container height adjustment */
+    .movie-list-container {
+        max-height: none;
+        overflow-y: visible;
     }
 }
 
@@ -1062,4 +1169,154 @@ footer i {
     color: var(--color-accent);
     margin: 0 0.1rem;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* ========================== */
+/* Touch Device Styles        */
+/* ========================== */
+/* For devices that don't support hover (touch screens) */
+@media (hover: none) and (pointer: coarse) {
+    /* Remove hover effects that don't work on touch */
+    .movie-container {
+        border: 1px solid var(--color-border);
+    }
+
+    .movie-container:hover {
+        border-color: var(--color-border);
+        box-shadow: var(--card-shadow);
+        transform: none;
+    }
+
+    /* Show backdrop at reduced opacity by default */
+    .movie-container::before,
+    .movie-container::after {
+        opacity: 0.4;
+    }
+
+    .movie-container:hover::before,
+    .movie-container:hover::after {
+        opacity: 0.4;
+    }
+
+    /* Disable thumbnail zoom on touch */
+    .movie-container:hover .logo-box {
+        transform: none;
+    }
+
+    /* Always show poster link button */
+    .link-button-over-image {
+        opacity: 1;
+        background: rgba(0, 0, 0, 0.5);
+        border-radius: 4px;
+        padding: 2px;
+    }
+
+    /* Always show card action buttons */
+    .card-actions {
+        opacity: 1;
+    }
+
+    /* Always show external link icons on rating pills */
+    .icon-text-pill .link-icon {
+        opacity: 1;
+    }
+
+    /* Larger touch targets for action buttons (44px minimum) */
+    .action-btn {
+        min-width: 44px;
+        min-height: 44px;
+    }
+
+    /* Disable hover scale on rating pills */
+    .icon-text-pill:hover {
+        transform: none;
+    }
+
+    /* Hide keyboard shortcut tooltip on touch devices */
+    .shortcut-tooltip {
+        display: none !important;
+    }
+}
+
+/* ========================== */
+/* Small Screen Adjustments   */
+/* ========================== */
+@media (max-width: 480px) {
+    /* Navbar adjustments */
+    .navbar-brand {
+        font-size: 1.1rem;
+    }
+
+    /* Head container stacks on very small screens */
+    .head-container {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .head-container > h3 {
+        align-self: flex-end;
+    }
+
+    /* Movie card compact layout */
+    .movie-container {
+        padding: 0.4rem;
+        min-height: auto;
+    }
+
+    .logo-box-container {
+        width: 45px;
+        height: 65px;
+        margin-right: 0.5rem;
+    }
+
+    .title-year-container > span {
+        font-size: 0.8rem;
+    }
+
+    .title-year-container > h3 {
+        font-size: 0.7rem;
+    }
+
+    /* Smaller rating pills on very small screens */
+    .icon-text-pill {
+        height: 1.2rem;
+        padding: 0.1rem 0.4rem;
+        font-size: 0.7rem;
+    }
+
+    .icon-text-pill > img {
+        height: 0.75rem;
+    }
+
+    /* Compact average score */
+    .avg-score {
+        min-width: 2rem;
+        height: 1.5rem;
+        font-size: 0.85rem;
+        padding: 0 0.4rem;
+    }
+
+    /* Stack action buttons vertically if needed */
+    .card-actions {
+        gap: 0.25rem;
+    }
+
+    /* Input card adjustments */
+    .input-card {
+        padding: 0.75rem;
+    }
+
+    .input-group .btn {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.85rem;
+    }
+
+    /* Rank indicator smaller */
+    .movie-rank-indicator {
+        font-size: 0.6rem;
+        min-width: 1rem;
+        height: 1rem;
+        line-height: 1rem;
+    }
 }
