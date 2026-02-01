@@ -71,7 +71,7 @@ def get_movie_rating(movie_id, platform):
     Get rating for a specific movie from a specific platform.
     Platforms: imdb, tmdb, rt
     Query params for tmdb: title, year
-    Query params for rt: title
+    Query params for rt: title, year
     Returns: {"rating": 8.7, "page_url": "...", ...}
     """
     platform = platform.lower()
@@ -93,12 +93,13 @@ def get_movie_rating(movie_id, platform):
 
     elif platform == "rt":
         title = request.args.get("title", "")
+        year = request.args.get("year", type=int)
         if not title:
             return Response(
                 response={"error": "Title is required for RT rating lookup"},
                 status=400,
             )
-        result = fetch_rt_rating(title)
+        result = fetch_rt_rating(title, year)
         return Response(response=result)
 
     else:
