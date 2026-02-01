@@ -36,6 +36,27 @@ function hideShortcutTooltip() {
   currentFocusedInput = null;
 }
 
+// Check if device is touch-capable (mobile/tablet)
+function isTouchDevice() {
+  return (('ontouchstart' in window) ||
+    (navigator.maxTouchPoints > 0) ||
+    (navigator.msMaxTouchPoints > 0));
+}
+
+// Scroll input into view when keyboard opens on mobile
+function scrollInputIntoView(inputElement) {
+  if (!isTouchDevice()) return;
+
+  // Wait for keyboard to appear
+  setTimeout(() => {
+    // Scroll the input into view with some padding
+    inputElement.scrollIntoView({
+      behavior: 'smooth',
+      block: 'center'
+    });
+  }, 300);
+}
+
 // Setup keyboard shortcuts and tooltip for search inputs
 function setupSearchShortcuts() {
   const singleInput = document.getElementById('single_text_input');
@@ -51,6 +72,9 @@ function setupSearchShortcuts() {
   };
 
   const handleFocus = (e) => {
+    // Scroll input into view on mobile when keyboard opens
+    scrollInputIntoView(e.target);
+
     // Schedule tooltip to show after 5 seconds of focus
     currentFocusedInput = e.target;
     clearTimeout(tooltipShowTimeout);
