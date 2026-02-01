@@ -148,12 +148,10 @@ function filterDuplicates(queries) {
 async function fetchPlatformRating(movieId, platform, title, year) {
   let url = `/api/movies/${encodeURIComponent(movieId)}/rating/${platform}`;
 
-  if (platform === 'tmdb') {
+  if (platform === 'tmdb' || platform === 'rt') {
     const params = new URLSearchParams({ title });
     if (year) params.append('year', year);
     url += `?${params.toString()}`;
-  } else if (platform === 'rt') {
-    url += `?title=${encodeURIComponent(title)}`;
   }
 
   try {
@@ -315,14 +313,22 @@ async function postSearchRequest(singleInputComponent, multiInputComponent) {
     if (data.movies && data.movies.length > 0) {
       let addedCount = 0;
 
+      // Build a map of query -> skeleton for efficient lookup and removal
+      const skeletonMap = new Map();
+      for (const s of skeletons) {
+        skeletonMap.set(s.query.toLowerCase(), s);
+      }
+
       // Replace skeletons with shell cards (have metadata, spinners for ratings)
       data.movies.forEach((movie, index) => {
         // Find matching skeleton by query
-        const matchingSkeleton = skeletons.find(s =>
-          s.query.toLowerCase() === movie.query.toLowerCase()
-        );
+        const queryKey = movie.query.toLowerCase();
+        const matchingSkeleton = skeletonMap.get(queryKey);
 
         if (matchingSkeleton) {
+          // Remove from map to prevent reuse
+          skeletonMap.delete(queryKey);
+
           const skeleton = document.getElementById(matchingSkeleton.tempId);
           if (skeleton) {
             // Create shell card with spinners
@@ -371,15 +377,7 @@ async function postSearchRequest(singleInputComponent, multiInputComponent) {
 
     if (data.errors && data.errors.length > 0) {
       console.warn("Some movies had errors:", data.errors);
-      // Remove skeletons for failed queries
-      data.errors.forEach(err => {
-        const matchingSkeleton = skeletons.find(s =>
-          s.query.toLowerCase() === err.query.toLowerCase()
-        );
-        if (matchingSkeleton) {
-          MovieRenderer.removeSkeleton(matchingSkeleton.tempId);
-        }
-      });
+      // Note: Skeletons for failed queries are already removed by removeAllSkeletons() above
 
       if (data.errors.length === queries.length) {
         showToast("Could not find any of the requested movies.", "error");

@@ -72,6 +72,13 @@ def fetch_imdb_rating(movie_id: str) -> dict:
     return result
 
 
+def _is_year_match(expected_year: int, actual_year: int, tolerance: int = 1) -> bool:
+    """Check if years match within tolerance (default ±1 year for regional differences)."""
+    if not expected_year or not actual_year:
+        return True  # Skip validation if year is missing
+    return abs(expected_year - actual_year) <= tolerance
+
+
 def fetch_tmdb_rating(title: str, year: int = None) -> dict:
     """
     Fetch TMDb rating by title and year.
@@ -83,63 +90,83 @@ def fetch_tmdb_rating(title: str, year: int = None) -> dict:
         return cached
 
     result = fetch_movie_data_from_tmdb(title=title, year=year)
+
+    # Default empty response
+    rating_data = {
+        "rating": None,
+        "page_url": "",
+        "backdrop_url": "",
+        "backdrop_url_hd": "",
+    }
+
     if result is None:
-        rating_data = {
-            "rating": None,
-            "page_url": "",
-            "backdrop_url": "",
-            "backdrop_url_hd": "",
-        }
-    else:
-        backdrop_path = result.get("backdrop_path")
-        rating_data = {
-            "rating": (
-                round(float(result.get("vote_average", 0)), 1)
-                if result.get("vote_average")
-                else None
-            ),
-            "page_url": (
-                f"https://www.themoviedb.org/movie/{result['id']}"
-                if result.get("id")
-                else ""
-            ),
-            "backdrop_url": (
-                f"https://image.tmdb.org/t/p/w780{backdrop_path}"
-                if backdrop_path
-                else ""
-            ),
-            "backdrop_url_hd": (
-                f"https://image.tmdb.org/t/p/original{backdrop_path}"
-                if backdrop_path
-                else ""
-            ),
-        }
+        _set_cached(cache_key, rating_data)
+        return rating_data
+
+    # Validate year match to ensure correct movie
+    result_year = result.get("year")
+    if not _is_year_match(year, result_year):
+        _set_cached(cache_key, rating_data)
+        return rating_data
+
+    backdrop_path = result.get("backdrop_path")
+    rating_data = {
+        "rating": (
+            round(float(result.get("vote_average", 0)), 1)
+            if result.get("vote_average")
+            else None
+        ),
+        "page_url": (
+            f"https://www.themoviedb.org/movie/{result['id']}"
+            if result.get("id")
+            else ""
+        ),
+        "backdrop_url": (
+            f"https://image.tmdb.org/t/p/w780{backdrop_path}" if backdrop_path else ""
+        ),
+        "backdrop_url_hd": (
+            f"https://image.tmdb.org/t/p/original{backdrop_path}"
+            if backdrop_path
+            else ""
+        ),
+    }
 
     _set_cached(cache_key, rating_data)
     return rating_data
 
 
-def fetch_rt_rating(title: str) -> dict:
+def fetch_rt_rating(title: str, year: int = None) -> dict:
     """
-    Fetch Rotten Tomatoes rating by title.
+    Fetch Rotten Tomatoes rating by title with year validation.
     Returns: { rating, page_url } or { rating: None, ... }
     """
-    cache_key = f"rt_rating:{title}"
+    cache_key = f"rt_rating:{title}:{year}"
     cached = _get_cached(cache_key)
     if cached is not None:
         return cached
 
-    result = fetch_movie_data_from_rt(title)
+    result = fetch_movie_data_from_rt(title, year)
+
+    # Default empty response
+    rating_data = {
+        "rating": None,
+        "page_url": result.get("page_url", "") if result else "",
+    }
+
     if result is None or result.get("rating", 0) == 0:
-        rating_data = {
-            "rating": None,
-            "page_url": result.get("page_url", "") if result else "",
-        }
-    else:
-        rating_data = {
-            "rating": round(float(result["rating"]), 1),
-            "page_url": result.get("page_url", ""),
-        }
+        _set_cached(cache_key, rating_data)
+        return rating_data
+
+    # Validate year match to ensure correct movie
+    result_year = result.get("year")
+    if not _is_year_match(year, result_year):
+        _set_cached(cache_key, rating_data)
+        return rating_data
+
+    rating_data = {
+        "rating": round(float(result["rating"]), 1),
+        "page_url": result.get("page_url", ""),
+    }
 
     _set_cached(cache_key, rating_data)
     return rating_data

@@ -6,9 +6,9 @@ const MovieRenderer = {
 
   updateCount() {
     const count = MovieStorage.count();
+    // Only add skeletons - shells are already in storage and shouldn't be double-counted
     const skeletonCount = document.querySelectorAll('.movie-skeleton').length;
-    const shellCount = document.querySelectorAll('.movie-shell').length;
-    const total = count + skeletonCount + shellCount;
+    const total = count + skeletonCount;
     document.getElementById("movie-total").textContent = `${total} Movie${total !== 1 ? 's' : ''} Listed`;
   },
 

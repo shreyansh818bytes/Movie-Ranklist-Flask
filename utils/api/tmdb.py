@@ -25,4 +25,12 @@ def fetch_movie_data_from_tmdb(
         timeout=5,
     ).json()
 
-    return pydash.get(response, "results[0]", None)
+    result = pydash.get(response, "results[0]", None)
+    if result:
+        # Extract year from release_date (format: "YYYY-MM-DD")
+        release_date = result.get("release_date", "")
+        if release_date and len(release_date) >= 4:
+            result["year"] = int(release_date[:4])
+        else:
+            result["year"] = None
+    return result
