@@ -72,18 +72,6 @@
                                 <p>Enter your credentials to continue</p>
                             </div>
 
-                            <!-- Alert Messages -->
-                            <div class="alert alert-success alert-dismissible fade show d-none" id="success-message" role="alert">
-                                <i class="bi bi-check-circle-fill me-2"></i>
-                                <span id="success-text"></span>
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                            <div class="alert alert-danger alert-dismissible fade show d-none" id="error-message" role="alert">
-                                <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                                <span id="error-text"></span>
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-
                             <form id="login-form">
                                 <div class="mb-4">
                                     <label for="email" class="form-label">Email address</label>
@@ -123,13 +111,34 @@
         </div>
 
         <script>
+            // Toast notification function
+            function showToast(message, type = 'info') {
+                const existingToast = document.querySelector('.toast-notification');
+                if (existingToast) existingToast.remove();
+
+                const toast = document.createElement('div');
+                toast.className = `toast-notification toast-${type}`;
+                const icons = {
+                    success: 'bi-check-circle-fill',
+                    error: 'bi-exclamation-circle-fill',
+                    warning: 'bi-exclamation-triangle-fill',
+                    info: 'bi-info-circle-fill'
+                };
+                toast.innerHTML = `<i class="bi ${icons[type] || icons.info}"></i><span>${message}</span>`;
+                document.body.appendChild(toast);
+
+                requestAnimationFrame(() => toast.classList.add('toast-show'));
+                setTimeout(() => {
+                    toast.classList.remove('toast-show');
+                    toast.classList.add('toast-hide');
+                    setTimeout(() => toast.remove(), 300);
+                }, 3000);
+            }
+
             // Check for success message from registration
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.get('registered') === 'true') {
-                const successDiv = document.getElementById('success-message');
-                document.getElementById('success-text').textContent = 'Account created successfully! Please sign in.';
-                successDiv.classList.remove('d-none');
-                // Clean up URL
+                showToast('Account created successfully! Please sign in.', 'success');
                 window.history.replaceState({}, document.title, window.location.pathname);
             }
 
@@ -153,15 +162,9 @@
                 e.preventDefault();
                 const email = document.getElementById('email').value;
                 const password = document.getElementById('password').value;
-                const errorDiv = document.getElementById('error-message');
-                const successDiv = document.getElementById('success-message');
                 const submitBtn = document.getElementById('submit-btn');
                 const btnText = submitBtn.querySelector('.btn-text');
                 const btnLoader = submitBtn.querySelector('.btn-loader');
-
-                // Hide messages
-                errorDiv.classList.add('d-none');
-                successDiv.classList.add('d-none');
 
                 // Show loading state
                 btnText.classList.add('d-none');
@@ -178,21 +181,18 @@
                     const data = await response.json();
 
                     if (data.success) {
-                        document.getElementById('success-text').textContent = 'Login successful! Redirecting...';
-                        successDiv.classList.remove('d-none');
+                        showToast('Login successful! Redirecting...', 'success');
                         setTimeout(() => {
                             window.location.href = '/';
                         }, 1000);
                     } else {
-                        document.getElementById('error-text').textContent = data.error;
-                        errorDiv.classList.remove('d-none');
+                        showToast(data.error, 'error');
                         btnText.classList.remove('d-none');
                         btnLoader.classList.add('d-none');
                         submitBtn.disabled = false;
                     }
                 } catch (error) {
-                    document.getElementById('error-text').textContent = 'An error occurred. Please try again.';
-                    errorDiv.classList.remove('d-none');
+                    showToast('An error occurred. Please try again.', 'error');
                     btnText.classList.remove('d-none');
                     btnLoader.classList.add('d-none');
                     submitBtn.disabled = false;

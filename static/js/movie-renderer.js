@@ -113,6 +113,9 @@ const MovieRenderer = {
 
         <!-- Backdrop button will be added dynamically if HD URL is available -->
 
+        <!-- Add to Watchlist Button -->
+        ${this.createWatchlistButton(movie.id)}
+
         <!-- Delete Button -->
         <button
           class="icon-button action-btn delete-button"
@@ -127,6 +130,26 @@ const MovieRenderer = {
     `;
 
     return container;
+  },
+
+  // Helper to create watchlist button with correct state
+  createWatchlistButton(movieId) {
+    const isInWatchlist = typeof WatchlistStorage !== 'undefined' && WatchlistStorage.has(movieId);
+    const icon = isInWatchlist ? 'fa-bookmark' : 'fa-bookmark-o';
+    const tooltip = isInWatchlist ? 'Remove from watchlist' : 'Add to watchlist';
+    const addClass = isInWatchlist ? ' added-to-watchlist' : '';
+
+    return `
+      <button
+        class="icon-button action-btn watchlist-button${addClass}"
+        type="button"
+        id="${movieId}-watchlist-btn"
+        onclick="toggleWatchlist('${movieId}')"
+        data-tooltip="${tooltip}"
+      >
+        <i class="fa ${icon}"></i>
+      </button>
+    `;
   },
 
   // Update a single rating pill when data arrives
@@ -414,6 +437,9 @@ const MovieRenderer = {
           <i class="fa fa-image"></i>
         </button>` : ''}
 
+        <!-- Add to Watchlist Button -->
+        ${this.createWatchlistButton(movie.id)}
+
         <!-- Delete Button -->
         <button
           class="icon-button action-btn delete-button"
@@ -482,6 +508,83 @@ function deleteMovie(movieId) {
   MovieRenderer.removeMovie(movieId);
 }
 
+// Global toggle watchlist function called from onclick
+async function toggleWatchlist(movieId) {
+  // Check if WatchlistStorage is available
+  if (typeof WatchlistStorage === "undefined") {
+    showToast("Watchlist feature not available", "error");
+    return;
+  }
+
+  const movie = MovieStorage.get(movieId);
+  if (!movie) {
+    showToast("Movie not found", "error");
+    return;
+  }
+
+  const button = document.getElementById(movieId + "-watchlist-btn");
+  const isInWatchlist = WatchlistStorage.has(movieId);
+
+  if (button) {
+    button.setAttribute("disabled", true);
+    button.innerHTML = '<i class="fa fa-spinner fa-spin"></i>';
+  }
+
+  if (isInWatchlist) {
+    // Remove from watchlist
+    const result = await WatchlistStorage.remove(movieId);
+
+    if (result.success) {
+      if (button) {
+        button.removeAttribute("disabled");
+        button.innerHTML = '<i class="fa fa-bookmark-o"></i>';
+        button.classList.remove("added-to-watchlist");
+        button.setAttribute("data-tooltip", "Add to watchlist");
+      }
+      showToast(`Removed "${movie.title}" from watchlist`, "success");
+
+      // Refresh watchlist if visible
+      if (typeof WatchlistRenderer !== "undefined") {
+        WatchlistRenderer.refreshGenres();
+        WatchlistRenderer.render();
+      }
+    } else {
+      if (button) {
+        button.removeAttribute("disabled");
+        button.innerHTML = '<i class="fa fa-bookmark"></i>';
+      }
+      showToast(result.error || "Failed to remove from watchlist", "error");
+    }
+  } else {
+    // Add to watchlist
+    const result = await WatchlistStorage.add(movie);
+
+    if (result.success) {
+      if (button) {
+        button.removeAttribute("disabled");
+        button.innerHTML = '<i class="fa fa-bookmark"></i>';
+        button.classList.add("added-to-watchlist");
+        button.setAttribute("data-tooltip", "Remove from watchlist");
+      }
+      showToast(`Added "${movie.title}" to watchlist`, "success");
+
+      // Refresh watchlist genres if available
+      if (typeof WatchlistRenderer !== "undefined") {
+        WatchlistRenderer.refreshGenres();
+      }
+    } else {
+      if (button) {
+        button.removeAttribute("disabled");
+        button.innerHTML = '<i class="fa fa-bookmark-o"></i>';
+      }
+      showToast(result.error || "Failed to add to watchlist", "error");
+    }
+  }
+}
+
+// Legacy alias for backwards compatibility
+const addToWatchlist = toggleWatchlist;
+
 // Global backdrop redirect function (uses HD URL)
 function openBackdrop(movieId) {
   const movie = MovieStorage.get(movieId);
@@ -531,20 +634,17 @@ function hideActionTooltip() {
 }
 
 function setupActionButtonTooltips() {
-  // Use event delegation on the movie list container
-  const container = document.querySelector('.movie-list-container');
-  if (!container) return;
-
-  container.addEventListener('mouseenter', (e) => {
-    const btn = e.target.closest('.action-btn[data-tooltip]');
-    if (btn) {
-      showActionTooltip(btn);
+  // Use event delegation on document for all data-tooltip elements
+  document.addEventListener('mouseenter', (e) => {
+    const el = e.target.closest('[data-tooltip]');
+    if (el) {
+      showActionTooltip(el);
     }
   }, true);
 
-  container.addEventListener('mouseleave', (e) => {
-    const btn = e.target.closest('.action-btn[data-tooltip]');
-    if (btn) {
+  document.addEventListener('mouseleave', (e) => {
+    const el = e.target.closest('[data-tooltip]');
+    if (el) {
       hideActionTooltip();
     }
   }, true);

@@ -11,6 +11,16 @@ const AuthHandler = {
             const data = await response.json();
             this.user = data.authenticated ? data.user : null;
             this.updateUI();
+
+            // Load watchlist IDs if user is logged in, then refresh movie cards
+            if (this.user && typeof WatchlistStorage !== 'undefined') {
+                await WatchlistStorage.loadIds();
+                // Re-render movies to show correct watchlist button states
+                if (typeof MovieRenderer !== 'undefined') {
+                    MovieRenderer.renderAll();
+                }
+            }
+
             return data;
         } catch (error) {
             console.error('Failed to check auth status:', error);
@@ -28,8 +38,13 @@ const AuthHandler = {
             });
             const data = await response.json();
             if (data.success) {
-                this.user = null;
-                this.updateUI();
+                // Show success toast and reload to reset state
+                if (typeof showToast === 'function') {
+                    showToast('Logged out successfully', 'success');
+                }
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
             }
             return data;
         } catch (error) {
