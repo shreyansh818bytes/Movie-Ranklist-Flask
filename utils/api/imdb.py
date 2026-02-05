@@ -95,3 +95,26 @@ def get_imdb_rating(tconst: str):
         "rating": rating,
         "page_url": f"https://www.imdb.com/title/{tconst}/",
     }
+
+
+@handle_api_exception
+def get_imdb_genres(tconst: str):
+    """
+    Get genres for a movie by tconst (e.g., tt0133093).
+    Returns: { genres: ["Action", "Sci-Fi", ...] } or None
+    """
+    url = "https://imdb8.p.rapidapi.com/title/get-genres"
+    query_params = {"tconst": tconst}
+    headers = {
+        "X-RapidAPI-Key": EnvVariable.IMDB_API_KEY.value,
+        "X-RapidAPI-Host": "imdb8.p.rapidapi.com",
+    }
+    response = requests.get(url, headers=headers, params=query_params).json()
+
+    # Response is typically a list of genre strings
+    if isinstance(response, list):
+        return {"genres": response}
+
+    # Some responses might have genres nested
+    genres = pydash.get(response, "genres", [])
+    return {"genres": genres if isinstance(genres, list) else []}

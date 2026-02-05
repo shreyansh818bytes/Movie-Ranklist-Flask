@@ -3,7 +3,7 @@ import re
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
-from .api.imdb import get_imdb_rating, search_imdb
+from .api.imdb import get_imdb_genres, get_imdb_rating, search_imdb
 from .api.rt import fetch_movie_data_from_rt
 from .api.tmdb import fetch_movie_data_from_tmdb
 
@@ -137,8 +137,8 @@ def fetch_tmdb_rating(title: str, year: int = None) -> dict:
 
 def fetch_rt_rating(title: str, year: int = None) -> dict:
     """
-    Fetch Rotten Tomatoes rating by title with year validation.
-    Returns: { rating, page_url } or { rating: None, ... }
+    Fetch Rotten Tomatoes ratings by title with year validation.
+    Returns: { rating, tomatometer, popcornmeter, page_url } or { rating: None, ... }
     """
     cache_key = f"rt_rating:{title}:{year}"
     cached = _get_cached(cache_key)
@@ -150,10 +150,20 @@ def fetch_rt_rating(title: str, year: int = None) -> dict:
     # Default empty response
     rating_data = {
         "rating": None,
+        "tomatometer": None,
+        "popcornmeter": None,
         "page_url": result.get("page_url", "") if result else "",
     }
 
-    if result is None or result.get("rating", 0) == 0:
+    if result is None:
+        _set_cached(cache_key, rating_data)
+        return rating_data
+
+    # Check if we have any valid scores
+    tomatometer = result.get("tomatometer", 0)
+    popcornmeter = result.get("popcornmeter", 0)
+
+    if tomatometer == 0 and popcornmeter == 0:
         _set_cached(cache_key, rating_data)
         return rating_data
 
@@ -164,12 +174,32 @@ def fetch_rt_rating(title: str, year: int = None) -> dict:
         return rating_data
 
     rating_data = {
-        "rating": round(float(result["rating"]), 1),
+        "rating": round(float(tomatometer), 1) if tomatometer > 0 else None,
+        "tomatometer": round(float(tomatometer), 1) if tomatometer > 0 else None,
+        "popcornmeter": round(float(popcornmeter), 1) if popcornmeter > 0 else None,
         "page_url": result.get("page_url", ""),
     }
 
     _set_cached(cache_key, rating_data)
     return rating_data
+
+
+def fetch_imdb_genres(movie_id: str) -> dict:
+    """
+    Fetch genres for a movie by movie ID (tconst).
+    Returns: { genres: ["Action", "Sci-Fi", ...] }
+    """
+    cache_key = f"imdb_genres:{movie_id}"
+    cached = _get_cached(cache_key)
+    if cached is not None:
+        return cached
+
+    result = get_imdb_genres(movie_id)
+    if result is None:
+        result = {"genres": []}
+
+    _set_cached(cache_key, result)
+    return result
 
 
 def search_movies_parallel(queries: list) -> dict:

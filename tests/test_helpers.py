@@ -227,13 +227,15 @@ class TestFetchRtRating:
 
     @patch("utils.helpers.fetch_movie_data_from_rt")
     def test_fetch_rt_rating_success(self, mock_fetch_rt):
-        """Test successful RT rating fetch."""
+        """Test successful RT rating fetch with tomatometer and popcornmeter."""
         from utils.helpers import _cache, fetch_rt_rating
 
         _cache.clear()
 
         mock_fetch_rt.return_value = {
             "rating": 6.8,
+            "tomatometer": 6.8,
+            "popcornmeter": 8.2,
             "page_url": "https://www.rottentomatoes.com/m/joker_2019",
             "year": 2019,
         }
@@ -241,6 +243,8 @@ class TestFetchRtRating:
         result = fetch_rt_rating("Joker", 2019)
 
         assert result["rating"] == 6.8
+        assert result["tomatometer"] == 6.8
+        assert result["popcornmeter"] == 8.2
         assert "rottentomatoes.com" in result["page_url"]
 
     @patch("utils.helpers.fetch_movie_data_from_rt")
@@ -252,6 +256,8 @@ class TestFetchRtRating:
 
         mock_fetch_rt.return_value = {
             "rating": 0,
+            "tomatometer": 0,
+            "popcornmeter": 0,
             "page_url": "",
             "year": None,
         }
@@ -259,6 +265,8 @@ class TestFetchRtRating:
         result = fetch_rt_rating("Nonexistent Movie", 2099)
 
         assert result["rating"] is None
+        assert result["tomatometer"] is None
+        assert result["popcornmeter"] is None
 
     @patch("utils.helpers.fetch_movie_data_from_rt")
     def test_fetch_rt_rating_year_mismatch(self, mock_fetch_rt):
@@ -270,6 +278,8 @@ class TestFetchRtRating:
         # Returns 2010 movie when searching for 2020
         mock_fetch_rt.return_value = {
             "rating": 8.7,
+            "tomatometer": 8.7,
+            "popcornmeter": 9.1,
             "page_url": "https://www.rottentomatoes.com/m/inception",
             "year": 2010,
         }
@@ -278,6 +288,8 @@ class TestFetchRtRating:
 
         # Should return empty due to year mismatch (10 years diff)
         assert result["rating"] is None
+        assert result["tomatometer"] is None
+        assert result["popcornmeter"] is None
 
 
 class TestSearchMoviesParallel:

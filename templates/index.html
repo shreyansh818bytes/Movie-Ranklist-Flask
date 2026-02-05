@@ -15,11 +15,15 @@
         <!-- CSS -->
         <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/index.css') }}" />
 
-        <!-- JS - Order matters: storage -> renderer -> api-handler -->
+        <!-- JS - Order matters: storage -> renderer -> api-handler -> watchlist -> view-controller -->
         <script type="text/javascript" src="{{ url_for('static', filename='js/movie-storage.js') }}"></script>
         <script type="text/javascript" src="{{ url_for('static', filename='js/movie-renderer.js') }}"></script>
         <script type="text/javascript" src="{{ url_for('static', filename='js/api-handler.js') }}"></script>
-        <script type="text/javascript" src="{{ url_for('static', filename='js/auth-handler.js') }}?v=2"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/watchlist-storage.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/watchlist-renderer.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/ranklist-modal.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/view-controller.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/auth-handler.js') }}?v=3"></script>
 
         <title>My Movies</title>
     </head>
@@ -27,7 +31,25 @@
         <!-- Navbar with auth -->
         <nav class="navbar navbar-dark">
             <div class="container-fluid">
-                <a class="navbar-brand" href="/">My Movies</a>
+                <div class="navbar-left">
+                    <button id="back-to-watchlist-btn" class="btn-back" style="display: none;" onclick="ViewController.switchView('watchlist')">
+                        <i class="fa fa-arrow-left"></i>
+                    </button>
+                    <a class="navbar-brand" href="/">
+                        <img src="{{ url_for('static', filename='assets/favicon.ico') }}" alt="Logo" class="navbar-logo">
+                        My Movies
+                    </a>
+                    <a href="/login" id="create-watchlist-btn" class="btn btn-create-watchlist">
+                        <i class="fa fa-plus me-1"></i>Create Watchlist
+                    </a>
+                </div>
+
+                <!-- Hidden tabs (kept for JS compatibility) -->
+                <div class="view-tabs" style="display: none;">
+                    <a href="#watchlist" id="tab-watchlist" class="view-tab"></a>
+                    <a href="#ranklist" id="tab-ranklist" class="view-tab"></a>
+                </div>
+
                 <div id="auth-nav">
                     <a href="/login" class="btn btn-outline-light">Login</a>
                 </div>
@@ -35,61 +57,97 @@
         </nav>
 
         <div class="app-container">
-            <!-- Output Box (Left Side) -->
-            <div class="container" id="output-container">
-                <div class="container head-container">
-                    <h2><i class="fa fa-film me-2"></i>Ranklist</h2>
-                    <h3 id="movie-total">0 Movies Listed</h3>
+            <!-- Watchlist Container (hidden by default) -->
+            <div class="container view-container" id="watchlist-container" style="display: none;">
+                <div class="head-container watchlist-head">
+                    <h2><i class="fa fa-bookmark me-2"></i>My Watchlist</h2>
+                    <h3 id="watchlist-count">0 Movies</h3>
                 </div>
 
-                <div class="container movie-list-container">
-                    <!-- Movie cards will be dynamically rendered here by movie-renderer.js -->
+                <!-- Filter Bar -->
+                <div id="watchlist-filters" class="watchlist-filters-container"></div>
+
+                <!-- Watchlist Grid -->
+                <div id="watchlist-grid" class="watchlist-grid">
+                    <!-- Watchlist cards will be rendered here by watchlist-renderer.js -->
                 </div>
             </div>
 
-            <!-- Input Box (Right Side) -->
-            <div class="container" id="input-container">
-                <div class="input-card">
-                    <h4><i class="fa fa-plus-circle me-2"></i>Add Movies</h4>
-                    <form
-                        action="javascript:postSearchRequest(single_text_input, text_area_input)"
-                    >
-                        <div class="input-group mb-3">
-                            <span class="input-group-text"><i class="fa fa-search"></i></span>
-                            <input
-                                class="form-control"
-                                type="search"
-                                name="single_text"
-                                id="single_text_input"
-                                placeholder="Search for a movie..."
-                            >
-                            <button class="btn btn-primary" type="submit" id="submit_btn" name="submit_btn">
-                                Add
-                            </button>
-                        </div>
+            <!-- Ranklist Container (original layout) -->
+            <div class="view-container" id="ranklist-container" style="display: flex;">
+                <!-- Output Box (Left Side) -->
+                <div id="output-container">
+                    <div class="head-container">
+                        <h2><i class="fa fa-list-ol me-2"></i>Ranklist</h2>
+                        <h3 id="movie-total">0 Movies Listed</h3>
+                    </div>
 
-                        <div class="divider-text">
-                            <span>or add multiple</span>
-                        </div>
+                    <div class="movie-list-container">
+                        <!-- Movie cards will be dynamically rendered here by movie-renderer.js -->
+                    </div>
+                </div>
 
-                        <div class="multi-input-section">
-                            <textarea
-                                class="form-control"
-                                id="text_area_input"
-                                name="multiple_text"
-                                placeholder="The Matrix 1999&#10;Inception 2010&#10;Interstellar 2014"
-                            ></textarea>
-                            <div class="d-flex justify-content-between align-items-center mt-2">
-                                <small class="form-text text-muted">
-                                    <i class="fa fa-info-circle me-1"></i>One movie per line
-                                </small>
-                                <button class="btn btn-accent" type="submit" id="submit_btn_multi" name="submit_btn_multi">
-                                    <i class="fa fa-plus me-1"></i>Add Movies
+                <!-- Input Box (Right Side) -->
+                <div id="input-container">
+                    <div class="input-card">
+                        <h4><i class="fa fa-plus-circle me-2"></i>Add Movies</h4>
+                        <form
+                            action="javascript:postSearchRequest(single_text_input, text_area_input)"
+                        >
+                            <div class="input-group mb-3">
+                                <span class="input-group-text"><i class="fa fa-search"></i></span>
+                                <input
+                                    class="form-control"
+                                    type="search"
+                                    name="single_text"
+                                    id="single_text_input"
+                                    placeholder="Search for a movie..."
+                                >
+                                <button class="btn btn-primary" type="submit" id="submit_btn" name="submit_btn">
+                                    Add
                                 </button>
                             </div>
-                        </div>
-                    </form>
+
+                            <div class="divider-text">
+                                <span>or add multiple</span>
+                            </div>
+
+                            <div class="multi-input-section">
+                                <textarea
+                                    class="form-control"
+                                    id="text_area_input"
+                                    name="multiple_text"
+                                    placeholder="The Matrix 1999&#10;Inception 2010&#10;Interstellar 2014"
+                                ></textarea>
+                                <div class="d-flex justify-content-between align-items-center mt-2">
+                                    <small class="form-text text-muted">
+                                        <i class="fa fa-info-circle me-1"></i>One movie per line
+                                    </small>
+                                    <button class="btn btn-accent" type="submit" id="submit_btn_multi" name="submit_btn_multi">
+                                        <i class="fa fa-plus me-1"></i>Add Movies
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                 </div>
+            </div>
+
+            <!-- Ranklist Modal (floating, visible on watchlist view) -->
+            <div id="ranklist-modal" class="ranklist-modal" style="display: none;">
+                <div class="modal-header">
+                    <div class="modal-title" onclick="RanklistModal.toggle()">
+                        <i class="fa fa-list-ol me-2"></i>
+                        <span>Ranklist</span>
+                        <span class="modal-count">0</span>
+                    </div>
+                    <div class="modal-actions">
+                        <button class="modal-toggle-btn" onclick="RanklistModal.toggle()">
+                            <i class="fa fa-chevron-up"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="modal-content"></div>
             </div>
         </div>
         <footer class="footer-container">

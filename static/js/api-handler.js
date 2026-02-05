@@ -284,10 +284,12 @@ async function fetchAllRatingsForMovie(movie) {
   fetchPlatformRating(movieId, 'rt', title, year).then(data => {
     MovieRenderer.updateRatingPill(movieId, 'rt', data);
 
-    // Update storage
+    // Update storage - store both tomatometer and popcornmeter
     const result = MovieStorage.updateMovie(movieId, {
       rt: {
-        rating: data.rating,
+        rating: data.rating || data.tomatometer,
+        tomatometer: data.tomatometer,
+        popcornmeter: data.popcornmeter,
         page_url: data.page_url,
       }
     });
@@ -524,7 +526,12 @@ async function refreshMovie(movieId) {
   fetchPlatformRating(movieId, 'rt', title, year).then(data => {
     MovieRenderer.updateRatingPill(movieId, 'rt', data);
     const result = MovieStorage.updateMovie(movieId, {
-      rt: { rating: data.rating, page_url: data.page_url }
+      rt: {
+        rating: data.rating || data.tomatometer,
+        tomatometer: data.tomatometer,
+        popcornmeter: data.popcornmeter,
+        page_url: data.page_url,
+      }
     });
     if (result) {
       MovieRenderer.updateAverageScore(movieId, result.movie.average_score);
